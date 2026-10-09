@@ -1,8 +1,69 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Головна";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="hero">
+    <div class="hero-content">
+
+        <span class="hero-badge">
+            Маркетплейс для геймерів
+        </span>
+
+        <h1>
+            @ViewData["ProjectName"]
+        </h1>
+
+        <p class="hero-description">
+            @ViewData["Description"]
+        </p>
+
+        <div class="hero-buttons">
+            <a href="#" class="main-button">
+                Переглянути товари
+            </a>
+
+            <a href="#" class="secondary-button">
+                Продати
+            </a>
+        </div>
+
+    </div>
 </div>
+
+<section class="features">
+
+    <h2>Що можна буде знайти на платформі</h2>
+
+    <div class="feature-grid">
+
+        <div class="feature-card">
+            <h3>Ігрова валюта</h3>
+            <p>
+                Валюта та ресурси для популярних онлайн-ігор.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <h3>Предмети</h3>
+            <p>
+                Скіни, предмети та інші внутрішньоігрові цінності.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <h3>Акаунти</h3>
+            <p>
+                Оголошення користувачів із продажу ігрових акаунтів.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <h3>Послуги</h3>
+            <p>
+                Допомога, прокачування, навчання та інші ігрові послуги.
+            </p>
+        </div>
+
+    </div>
+
+</section>

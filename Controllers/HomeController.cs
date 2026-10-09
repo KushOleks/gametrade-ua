@@ -1,31 +1,22 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using OrderSystem.Models;
+using OrderSystem.Services;
 
 namespace OrderSystem.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly IMarketplaceInfoService _marketplaceInfoService;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(IMarketplaceInfoService marketplaceInfoService)
     {
-        _logger = logger;
+        _marketplaceInfoService = marketplaceInfoService;
     }
 
     public IActionResult Index()
     {
-        return View();
-    }
+        ViewData["ProjectName"] = _marketplaceInfoService.GetProjectName();
+        ViewData["Description"] = _marketplaceInfoService.GetDescription();
 
-    public IActionResult Privacy()
-    {
         return View();
-    }
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }
