@@ -1,0 +1,62 @@
+@model OrderSystem.Models.Product
+
+@{
+    ViewData["Title"] = "Деталі товару";
+}
+
+<section class="product-details">
+
+    <a asp-action="Index" class="back-link">
+        ← Назад до товарів
+    </a>
+
+    <div class="details-card">
+
+        <span class="product-game">
+            @Model.Game
+        </span>
+
+        <h1>@Model.Name</h1>
+        <span class="product-status @(Model.IsAvailable ? "available" : "unavailable")">@(Model.IsAvailable ? "Доступний" : "Недоступний")</span>
+
+        <p class="details-category">
+            @Model.Category
+        </p>
+
+        <div class="details-price">
+            @Model.Price.ToString("0.00") ₴
+        </div>
+
+        <div class="details-section">
+            <h3>Опис</h3>
+            <p>
+                @(string.IsNullOrWhiteSpace(Model.Description)
+                    ? "Опис відсутній."
+                    : Model.Description)
+            </p>
+        </div>
+
+        <div class="details-section">
+            <h3>Продавець</h3>
+            <p>@Model.SellerName</p>
+        </div>
+
+        <div class="details-actions">
+
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="main-button">
+                Редагувати
+            </a>
+
+            <a asp-action="Delete"
+               asp-route-id="@Model.Id"
+               class="danger-button">
+                Видалити
+            </a>
+
+        </div>
+
+    </div>
+
+</section>

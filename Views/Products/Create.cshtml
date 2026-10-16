@@ -1,0 +1,89 @@
+@model OrderSystem.Models.Product
+
+@{
+    ViewData["Title"] = "Створити оголошення";
+}
+
+<section class="product-form-page">
+
+    <div class="form-container">
+
+        <a asp-action="Index" class="back-link">
+            ← Назад
+        </a>
+
+        <h1>Створити оголошення</h1>
+
+        <p class="form-description">
+            Додайте новий товар або послугу на GameTrade UA.
+        </p>
+
+        <form asp-action="Create" method="post">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="validation-summary">
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" />
+                <span asp-validation-for="Name"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Game"></label>
+                <input asp-for="Game" />
+                <span asp-validation-for="Game"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Category"></label>
+
+                <select asp-for="Category">
+                    <option value="">Оберіть категорію</option>
+                    <option value="Ігрова валюта">Ігрова валюта</option>
+                    <option value="Предмети">Предмети</option>
+                    <option value="Акаунти">Акаунти</option>
+                    <option value="Послуги">Послуги</option>
+                    <option value="Скіни">Скіни</option>
+                </select>
+
+                <span asp-validation-for="Category"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Price"></label>
+                <input asp-for="Price" type="number" min="0.01" max="1000000" step="0.01" />
+                <span asp-validation-for="Price"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="SellerName"></label>
+                <input asp-for="SellerName" />
+                <span asp-validation-for="SellerName"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description"></label>
+                <textarea asp-for="Description" rows="5"></textarea>
+                <span asp-validation-for="Description"></span>
+            </div>
+
+            <div class="checkbox-group">
+                <input asp-for="IsAvailable" />
+                <label asp-for="IsAvailable"></label>
+            </div>
+
+            <button type="submit" class="main-button">
+                Опублікувати
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

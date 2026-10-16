@@ -1,3 +1,4 @@
+using OrderSystem.Middleware;
 using OrderSystem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,8 +6,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IMarketplaceInfoService, MarketplaceInfoService>();
+builder.Services.AddSingleton<IProductService, InMemoryProductService>();
 
 var app = builder.Build();
+
+app.UseMiddleware<RequestLoggingMiddleware>();
 
 if (!app.Environment.IsDevelopment())
 {
@@ -15,7 +19,6 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 
 app.UseRouting();

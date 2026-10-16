@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Головна";
 }
 
@@ -18,11 +18,11 @@
         </p>
 
         <div class="hero-buttons">
-            <a href="#" class="main-button">
+            <a asp-controller="Products" asp-action="Index" class="main-button">
                 Переглянути товари
             </a>
 
-            <a href="#" class="secondary-button">
+            <a asp-controller="Products" asp-action="Create" class="secondary-button">
                 Продати
             </a>
         </div>
@@ -66,4 +66,9 @@
 
     </div>
 
+</section>
+<section id="how-it-works" class="features">
+    <h2>Як це працює</h2>
+    <p>Перегляньте каталог, відкрийте деталі пропозиції або створіть власне оголошення.</p>
+    <p>Зараз працює демонстраційний каталог: оголошення зберігаються до перезапуску сервера. Оплата та угоди ще не підключені.</p>
 </section>

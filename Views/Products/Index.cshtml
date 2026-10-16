@@ -1,0 +1,86 @@
+@model IEnumerable<OrderSystem.Models.Product>
+
+@{
+    ViewData["Title"] = "Каталог";
+}
+
+<section class="products-page">
+
+    <div class="products-header">
+        <div>
+            <span class="page-label">Marketplace</span>
+            <h1>Каталог</h1>
+            <p>Пропозиції користувачів GameTrade UA</p>
+        </div>
+
+        <a asp-action="Create" class="main-button">
+            + Створити оголошення
+        </a>
+    </div>
+
+    <p class="catalog-note">Демонстраційний каталог. Зміни зберігаються до перезапуску сервера.</p>
+    @if (!Model.Any())
+    {
+        <p class="empty-state">Оголошень поки немає. Створіть перше!</p>
+    }
+    <div class="products-grid">
+
+        @foreach (var product in Model)
+        {
+            <div class="product-card">
+
+                <div class="product-top">
+                    <span class="product-game">@product.Game</span>
+
+                    @if (product.IsAvailable)
+                    {
+                        <span class="product-status available">
+                            Доступний
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="product-status unavailable">
+                            Недоступний
+                        </span>
+                    }
+                </div>
+
+                <h2>@product.Name</h2>
+
+                <p class="product-category">
+                    @product.Category
+                </p>
+
+                <div class="product-seller">
+                    Продавець: @product.SellerName
+                </div>
+
+                <div class="product-bottom">
+
+                    <strong>
+                        @product.Price.ToString("0.00") ₴
+                    </strong>
+
+                    <div class="product-actions">
+
+                        <a asp-action="Details"
+                           asp-route-id="@product.Id">
+                            Деталі
+                        </a>
+
+                        <a asp-action="Edit"
+                           asp-route-id="@product.Id">
+                            Редагувати
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</section>

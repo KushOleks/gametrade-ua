@@ -1,0 +1,49 @@
+@model OrderSystem.Models.Product
+
+@{
+    ViewData["Title"] = "Видалити товар";
+}
+
+<section class="product-details">
+
+    <div class="details-card">
+
+        <span class="danger-label">
+            Видалення
+        </span>
+
+        <h1>Видалити оголошення?</h1>
+
+        <p>
+            Ви справді хочете видалити
+            <strong>@Model.Name</strong>?
+        </p>
+
+        <p>
+            Цю дію не можна скасувати.
+        </p>
+
+        <form asp-action="Delete" method="post">
+
+            <input type="hidden"
+                   asp-for="Id" />
+
+            <div class="details-actions">
+
+                <button type="submit"
+                        class="danger-button">
+                    Видалити
+                </button>
+
+                <a asp-action="Index"
+                   class="secondary-button">
+                    Скасувати
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
