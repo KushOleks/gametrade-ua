@@ -13,10 +13,41 @@ public class ProductsController : Controller
         _productService = productService;
     }
 
-    public IActionResult Index()
+    [HttpGet]
+    public IActionResult Index([FromQuery] ProductFilter filter)
     {
-        var products = _productService.GetAll();
-        return View(products);
+        var all = _productService.GetAll().ToArray();
+        IEnumerable<Product> products = all;
+        if (ModelState.IsValid)
+        {
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+                products = products.Where(p => p.Name.Contains(filter.Search.Trim(), StringComparison.OrdinalIgnoreCase));
+            if (!string.IsNullOrWhiteSpace(filter.Game))
+                products = products.Where(p => p.Game.Equals(filter.Game, StringComparison.OrdinalIgnoreCase));
+            if (!string.IsNullOrWhiteSpace(filter.Category))
+                products = products.Where(p => p.Category.Equals(filter.Category, StringComparison.OrdinalIgnoreCase));
+            if (filter.MinPrice.HasValue) products = products.Where(p => p.Price >= filter.MinPrice.Value);
+            if (filter.MaxPrice.HasValue) products = products.Where(p => p.Price <= filter.MaxPrice.Value);
+            if (filter.OnlyAvailable) products = products.Where(p => p.IsAvailable);
+        }
+        else
+        {
+            products = Array.Empty<Product>();
+        }
+
+        return View(new ProductCatalogViewModel
+        {
+            Filter = filter,
+            Products = products.ToArray(),
+            Games = all.Select(p => p.Game).Distinct().OrderBy(g => g).ToArray(),
+            Categories = all.Select(p => p.Category).Distinct().OrderBy(c => c).ToArray()
+        });
+    }
+
+    private IActionResult ProductNotFound()
+    {
+        Response.StatusCode = StatusCodes.Status404NotFound;
+        return View("ProductNotFound");
     }
 
     public IActionResult Details(int id)
@@ -25,7 +56,7 @@ public class ProductsController : Controller
 
         if (product == null)
         {
-            return NotFound();
+            return ProductNotFound();
         }
 
         return View(product);
@@ -56,7 +87,7 @@ public class ProductsController : Controller
 
         if (product == null)
         {
-            return NotFound();
+            return ProductNotFound();
         }
 
         return View(product);
@@ -67,7 +98,7 @@ public class ProductsController : Controller
     public IActionResult Edit([FromRoute] int id, [Bind("Id,Name,Game,Category,Price,Description,SellerName,IsAvailable")] Product product)
     {
         if (id != product.Id) return BadRequest();
-        if (_productService.GetById(id) is null) return NotFound();
+        if (_productService.GetById(id) is null) return ProductNotFound();
 
         if (!ModelState.IsValid)
         {
@@ -76,7 +107,7 @@ public class ProductsController : Controller
 
         if (!_productService.Update(product))
         {
-            return NotFound();
+            return ProductNotFound();
         }
 
         return RedirectToAction(nameof(Index));
@@ -88,7 +119,7 @@ public class ProductsController : Controller
 
         if (product == null)
         {
-            return NotFound();
+            return ProductNotFound();
         }
 
         return View(product);
@@ -100,7 +131,7 @@ public class ProductsController : Controller
     {
         if (!_productService.Delete(id))
         {
-            return NotFound();
+            return ProductNotFound();
         }
 
         return RedirectToAction(nameof(Index));

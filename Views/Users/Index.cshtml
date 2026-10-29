@@ -1,0 +1,18 @@
+@model IReadOnlyList<OrderSystem.Models.MarketplaceUser>
+@{ ViewData["Title"] = "Демонстраційні користувачі"; }
+<section class="products-page">
+    <h1>Користувачі</h1>
+    <p class="catalog-note">Демонстраційні записи для практичної №3. Це не зареєстровані облікові записи.</p>
+    <div class="table-container">
+        <table class="users-table">
+            <thead><tr><th scope="col">ID</th><th scope="col">Ім’я</th><th scope="col">Роль</th></tr></thead>
+            <tbody>
+            @foreach (var user in Model)
+            {
+                <tr><td>@user.Id</td><td>@user.DisplayName</td><td>@user.Role</td></tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <a asp-controller="Products" asp-action="Index" class="back-link">До каталогу</a>
+</section>

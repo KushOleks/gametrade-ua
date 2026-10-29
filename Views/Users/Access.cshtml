@@ -1,0 +1,16 @@
+@{ ViewData["Title"] = "Доступ до демонстраційної адмінчастини"; }
+<section class="product-form-page">
+    <div class="form-container">
+        <span class="page-label">Практична №3 · 401</span>
+        <h1>Доступ не надано</h1>
+        <p>Введіть навчальний код доступу, щоб переглянути демонстраційних користувачів.</p>
+        <form asp-controller="Users" asp-action="Index" method="post">
+            <div class="form-group">
+                <label for="accessCode">Код доступу</label>
+                <input id="accessCode" name="accessCode" type="password" autocomplete="off" required />
+            </div>
+            <button type="submit" class="main-button">Показати користувачів</button>
+        </form>
+        <a asp-controller="Products" asp-action="Index" class="back-link">До каталогу</a>
+    </div>
+</section>

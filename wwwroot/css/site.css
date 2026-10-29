@@ -458,3 +458,16 @@ a:focus-visible, button:focus-visible { outline: 2px solid #a8b1ff; outline-offs
     .form-container, .details-card { padding: 22px; }
     .product-form-page, .product-details, .products-page { padding: 36px 0 60px; }
 }
+
+.catalog-filters { padding: 24px; background: #14171c; border: 1px solid #23272f; border-radius: 16px; margin-bottom: 24px; }
+.filter-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.filter-grid .form-group { margin-top: 0; }
+.filter-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-top: 20px; }
+.filter-actions .checkbox-group { margin: 0 auto 0 0; }
+.product-actions { flex-wrap: wrap; }
+.table-container { overflow-x: auto; margin: 24px 0; }
+.users-table { width: 100%; border-collapse: collapse; background: #14171c; }
+.users-table th, .users-table td { padding: 16px; border-bottom: 1px solid #2a3039; text-align: left; }
+.form-container button { margin-top: 20px; }
+.form-container .back-link { margin-top: 24px; }
+@media (max-width: 700px) { .filter-grid { grid-template-columns: 1fr; } }
