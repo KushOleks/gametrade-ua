@@ -6,6 +6,10 @@
 
 <section class="products-page">
 
+    @if (TempData["CatalogMessage"] is string message)
+    {
+        <p class="success-message" role="status">@message</p>
+    }
     <div class="products-header">
         <div>
             <span class="page-label">Marketplace</span>
@@ -48,11 +52,11 @@
             </div>
             <div class="form-group">
                 <label for="MinPrice">Ціна від, грн</label>
-                @Html.TextBox("MinPrice", Model.Filter.MinPrice?.ToString(System.Globalization.CultureInfo.InvariantCulture), new { type = "number", min = "0", max = "1000000", step = "0.01" })
+                @Html.TextBox("MinPrice", Model.Filter.MinPrice?.ToString(System.Globalization.CultureInfo.InvariantCulture), new { type = "number", min = "0", max = "100000", step = "0.01" })
             </div>
             <div class="form-group">
                 <label for="MaxPrice">Ціна до, грн</label>
-                @Html.TextBox("MaxPrice", Model.Filter.MaxPrice?.ToString(System.Globalization.CultureInfo.InvariantCulture), new { type = "number", min = "0", max = "1000000", step = "0.01" })
+                @Html.TextBox("MaxPrice", Model.Filter.MaxPrice?.ToString(System.Globalization.CultureInfo.InvariantCulture), new { type = "number", min = "0", max = "100000", step = "0.01" })
             </div>
         </div>
         <div class="filter-actions">
@@ -63,6 +67,16 @@
             <a asp-controller="Products" asp-action="Index" class="secondary-button">Скинути фільтри</a>
         </div>
     </form>
+    <details class="catalog-filters">
+        <summary>Масове редагування цін за категорією</summary>
+        <p class="catalog-note">Оберіть категорію, щоб змінити ціни всіх її оголошень.</p>
+        <div class="filter-actions">
+            @foreach (var category in Enum.GetValues<ProductCategory>())
+            {
+                <a asp-action="EditPrices" asp-route-category="@category" class="secondary-button">@(((ProductCategory?)category).Label())</a>
+            }
+        </div>
+    </details>
     <p class="catalog-note">Знайдено оголошень: @Model.Products.Count</p>
     @if (!Model.Products.Any())
     {
@@ -94,7 +108,7 @@
                 <h2>@product.Name</h2>
 
                 <p class="product-category">
-                    @product.Category
+                    @product.Category.Label()
                 </p>
 
                 <div class="product-seller">

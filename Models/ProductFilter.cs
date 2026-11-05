@@ -8,10 +8,10 @@ public class ProductFilter : IValidatableObject
     public string? Game { get; set; }
     public string? Category { get; set; }
 
-    [Range(0, 1000000, ErrorMessage = "Ціна має бути від 0 до 1 000 000 грн")]
+    [Range(0, 100000, ErrorMessage = "Ціна має бути від 0 до 100 000 грн")]
     public decimal? MinPrice { get; set; }
 
-    [Range(0, 1000000, ErrorMessage = "Ціна має бути від 0 до 1 000 000 грн")]
+    [Range(0, 100000, ErrorMessage = "Ціна має бути від 0 до 100 000 грн")]
     public decimal? MaxPrice { get; set; }
     public bool OnlyAvailable { get; set; }
 

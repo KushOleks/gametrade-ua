@@ -12,7 +12,7 @@ client = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.coo
 
 def request(path, data=None):
     try:
-        response = client.open(base + path, None if data is None else urllib.parse.urlencode(data).encode())
+        response = client.open(base + path, None if data is None else urllib.parse.urlencode(data, doseq=True).encode())
         return response.status, response.geturl(), re.sub(r"&#[^;]+;", lambda m: html.unescape(m[0]), response.read().decode())
     except urllib.error.HTTPError as error:
         return error.code, error.geturl(), re.sub(r"&#[^;]+;", lambda m: html.unescape(m[0]), error.read().decode())
@@ -27,23 +27,21 @@ for path in ['/', '/Products', '/Products/Details/1', '/Products/Edit/1', '/Prod
 for action in ['Details', 'Edit', 'Delete']:
     assert request('/Products/' + action + '/999999')[0] == 404
 assert request('/Products/Create', {})[0] == 400
-product = dict(Name='Smoke test item', Game='Test game', Category='Скіни', Price='125.75', SellerName='Tester', Description='<script>alert(1)</script>', IsAvailable='true')
+product = dict(Name='Smoke test item', Game='Test game', Category='Skins', Price='125.75', SellerName='Tester', Description='<script>alert(1)</script>', IsAvailable='true')
 product['__Invariant'] = 'Price'
 product['__RequestVerificationToken'] = token('/Products/Create')
-invalid = dict(product, Name='', Price='0', Category='invalid')
+invalid = dict(product, Name='', Price='-1', Category='999')
 status, _, body = request('/Products/Create', invalid)
-assert status == 200 and 'Вкажіть назву товару' in body and 'Оберіть категорію зі списку' in body
-status, _, body = request('/Products/Create', product)
+assert status == 200 and 'Вкажіть назву товару' in body and re.search(r'field-validation-error[^>]*data-valmsg-for="Category"', body)
+status, created_url, body = request('/Products/Create', product)
 assert status == 200 and 'Smoke test item' in body
-# Find the created card independently of the seed items.
-assert '<h2>Smoke test item</h2>' in body, body
-card = body[body.index('<h2>Smoke test item</h2>'):]
-item_id = re.search(r'/(?:Products/Details|products)/(\d+)', card)[1]
+# Save opens the new product in details mode.
+item_id = re.search(r'/(?:Products/Details|products)/(\d+)', created_url)[1]
 status, _, body = request('/Products/Details/' + item_id)
 assert status == 200 and re.search(r'125[.,]75', body) and '&lt;script&gt;' in body
 product.update(Id=item_id, Name='Edited smoke item', IsAvailable='false', __RequestVerificationToken=token('/Products/Edit/' + item_id))
 assert request('/Products/Edit/999999', product)[0] == 400
-assert request('/Products/Edit/' + item_id, dict(product, Price='0'))[0] == 200
+assert request('/Products/Edit/' + item_id, dict(product, Price='-1'))[0] == 200
 assert 'Smoke test item' in request('/Products/Details/' + item_id)[2]
 assert request('/Products/Edit/' + item_id, product)[0] == 200
 body = request('/Products/Details/' + item_id)[2]

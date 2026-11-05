@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OrderSystem.Models;
 
-public class Product
+public class Product : IValidatableObject
 {
     public int Id { get; set; }
 
@@ -17,15 +17,15 @@ public class Product
     public string Game { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Вкажіть категорію")]
-    [RegularExpression("^(Ігрова валюта|Предмети|Акаунти|Послуги|Скіни)$", ErrorMessage = "Оберіть категорію зі списку")]
+    [EnumDataType(typeof(ProductCategory), ErrorMessage = "Оберіть категорію зі списку")]
     [Display(Name = "Категорія")]
-    public string Category { get; set; } = string.Empty;
+    public ProductCategory? Category { get; set; }
 
-    [Range(0.01, 1000000, ErrorMessage = "Ціна повинна бути більшою за 0")]
+    [Range(typeof(decimal), "0", "100000", ErrorMessage = "Ціна має бути від 0 до 100 000 грн")]
     [Display(Name = "Ціна, грн")]
     public decimal Price { get; set; }
 
-    [StringLength(500, ErrorMessage = "Опис не може перевищувати 500 символів")]
+    [StringLength(500, MinimumLength = 3, ErrorMessage = "Опис має містити від 3 до 500 символів")]
     [Display(Name = "Опис")]
     public string? Description { get; set; }
 
@@ -36,4 +36,15 @@ public class Product
 
     [Display(Name = "Доступний")]
     public bool IsAvailable { get; set; } = true;
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (!string.IsNullOrWhiteSpace(Description))
+        {
+            if (Description.Trim().Length < 3)
+                yield return new ValidationResult("Опис має містити щонайменше 3 змістовні символи", new[] { nameof(Description) });
+            if (string.Equals(Description.Trim(), Name.Trim(), StringComparison.OrdinalIgnoreCase))
+                yield return new ValidationResult("Опис має доповнювати назву, а не повторювати її", new[] { nameof(Description) });
+        }
+    }
 }

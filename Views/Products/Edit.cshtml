@@ -37,12 +37,8 @@
             <div class="form-group">
                 <label asp-for="Category"></label>
 
-                <select asp-for="Category">
-                    <option value="Ігрова валюта">Ігрова валюта</option>
-                    <option value="Предмети">Предмети</option>
-                    <option value="Акаунти">Акаунти</option>
-                    <option value="Послуги">Послуги</option>
-                    <option value="Скіни">Скіни</option>
+                <select asp-for="Category" asp-items="Html.GetEnumSelectList<ProductCategory>()">
+                    <option value="">Оберіть категорію</option>
                 </select>
 
                 <span asp-validation-for="Category"></span>
@@ -50,7 +46,7 @@
 
             <div class="form-group">
                 <label asp-for="Price"></label>
-                <input asp-for="Price" type="number" min="0.01" max="1000000" step="0.01" />
+                <input asp-for="Price" type="number" min="0" max="100000" step="0.01" />
                 <span asp-validation-for="Price"></span>
             </div>
 
@@ -63,6 +59,7 @@
             <div class="form-group">
                 <label asp-for="Description"></label>
                 <textarea asp-for="Description" rows="5"></textarea>
+                <small class="catalog-note">Необов’язково. Від 3 до 500 символів; додайте деталі, яких немає в назві.</small>
                 <span asp-validation-for="Description"></span>
             </div>
 

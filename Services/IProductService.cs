@@ -9,4 +9,5 @@ public interface IProductService
     void Add(Product product);
     bool Update(Product product);
     bool Delete(int id);
+    bool UpdatePrices(ProductCategory category, IReadOnlyList<PriceEditRow> rows);
 }

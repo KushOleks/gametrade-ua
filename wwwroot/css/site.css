@@ -471,3 +471,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid #a8b1ff; outline-offs
 .form-container button { margin-top: 20px; }
 .form-container .back-link { margin-top: 24px; }
 @media (max-width: 700px) { .filter-grid { grid-template-columns: 1fr; } }
+
+.success-message { padding: 16px; color: #8de0a8; background: #15271c; border: 1px solid #2a5538; border-radius: 12px; }
+input[readonly] { color: #a8afba; cursor: default; }
+.users-table .form-group { min-width: 150px; }
+.catalog-filters summary { cursor: pointer; font-weight: 600; }

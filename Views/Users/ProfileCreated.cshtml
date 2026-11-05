@@ -1,0 +1,14 @@
+@model OrderSystem.Models.MarketplaceUser
+@{ ViewData["Title"] = "Демопрофіль створено"; }
+<section class="product-details">
+    <div class="details-card">
+        <p class="success-message" role="status">Демопрофіль створено</p>
+        <h1>@Model.DisplayName</h1>
+        <dl>
+            <dt>ID</dt><dd>@Model.Id</dd>
+            <dt>Роль</dt><dd>@Model.Role</dd>
+            <dt>Улюблена гра</dt><dd>@(Model.FavoriteGame ?? "Не вказана")</dd>
+        </dl>
+        <a asp-controller="Products" asp-action="Index" class="main-button">До каталогу</a>
+    </div>
+</section>

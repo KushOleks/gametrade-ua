@@ -1,0 +1,41 @@
+@model OrderSystem.Models.EditPricesViewModel
+@{ ViewData["Title"] = "Редагування цін"; }
+<section class="products-page">
+    <a asp-action="Index" class="back-link">← До каталогу</a>
+    <h1>Ціни: @Model.Category.Label()</h1>
+    <p class="catalog-note">Зміни збережуться разом, якщо всі ціни правильні. ID та назви не редагуються.</p>
+    @if (Model.Rows.Count == 0)
+    {
+        <p class="empty-state">У цій категорії поки немає оголошень.</p>
+    }
+    else
+    {
+        <form asp-action="EditPrices" method="post">
+            <input asp-for="Category" type="hidden" />
+            <div asp-validation-summary="All" class="validation-summary" role="alert"></div>
+            <div class="table-container">
+                <table class="users-table">
+                    <thead><tr><th scope="col">ID</th><th scope="col">Назва</th><th scope="col">Ціна, грн</th></tr></thead>
+                    <tbody>
+                    @for (var i = 0; i < Model.Rows.Count; i++)
+                    {
+                        <tr>
+                            <td>@Model.Rows[i].Id<input asp-for="Rows[i].Id" type="hidden" /></td>
+                            <td>@Model.Rows[i].Name</td>
+                            <td class="form-group">
+                                <label asp-for="Rows[i].Price" class="visually-hidden">Ціна @Model.Rows[i].Name</label>
+                                <input asp-for="Rows[i].Price" type="number" min="0" max="100000" step="0.01" />
+                                <input asp-for="Rows[i].OriginalPrice" type="hidden" />
+                                <span asp-validation-for="Rows[i].Price"></span>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+            <button type="submit" class="main-button">Зберегти всі ціни</button>
+            <a asp-action="EditPrices" asp-route-category="@Model.Category" class="secondary-button">Оновити дані</a>
+        </form>
+    }
+</section>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

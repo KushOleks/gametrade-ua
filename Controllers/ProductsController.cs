@@ -16,6 +16,8 @@ public class ProductsController : Controller
     [HttpGet]
     public IActionResult Index([FromQuery] ProductFilter filter)
     {
+        if (ProductCategories.TryParse(filter.Category, out var selectedCategory))
+            filter.Category = ((ProductCategory?)selectedCategory).Label();
         var all = _productService.GetAll().ToArray();
         IEnumerable<Product> products = all;
         if (ModelState.IsValid)
@@ -25,7 +27,7 @@ public class ProductsController : Controller
             if (!string.IsNullOrWhiteSpace(filter.Game))
                 products = products.Where(p => p.Game.Equals(filter.Game, StringComparison.OrdinalIgnoreCase));
             if (!string.IsNullOrWhiteSpace(filter.Category))
-                products = products.Where(p => p.Category.Equals(filter.Category, StringComparison.OrdinalIgnoreCase));
+                products = products.Where(p => ProductCategories.TryParse(filter.Category, out var category) && p.Category == category);
             if (filter.MinPrice.HasValue) products = products.Where(p => p.Price >= filter.MinPrice.Value);
             if (filter.MaxPrice.HasValue) products = products.Where(p => p.Price <= filter.MaxPrice.Value);
             if (filter.OnlyAvailable) products = products.Where(p => p.IsAvailable);
@@ -40,8 +42,37 @@ public class ProductsController : Controller
             Filter = filter,
             Products = products.ToArray(),
             Games = all.Select(p => p.Game).Distinct().OrderBy(g => g).ToArray(),
-            Categories = all.Select(p => p.Category).Distinct().OrderBy(c => c).ToArray()
+            Categories = Enum.GetValues<ProductCategory>().Select(c => ((ProductCategory?)c).Label()).ToArray()
         });
+    }
+
+    [HttpGet]
+    public IActionResult EditPrices([FromQuery] ProductCategory? category)
+    {
+        if (!ModelState.IsValid || !category.HasValue || !Enum.IsDefined(category.Value)) return BadRequest();
+        return View(new EditPricesViewModel
+        {
+            Category = category,
+            Rows = _productService.GetAll().Where(p => p.Category == category).Select(p => new PriceEditRow
+            {
+                Id = p.Id, Name = p.Name, Price = p.Price, OriginalPrice = p.Price
+            }).ToList()
+        });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult EditPrices([FromForm] EditPricesViewModel model)
+    {
+        if (!model.Category.HasValue || !Enum.IsDefined(model.Category.Value)) return BadRequest();
+        var current = _productService.GetAll().Where(p => p.Category == model.Category).ToDictionary(p => p.Id);
+        // Names are display-only and always loaded from storage, not from the submitted form.
+        foreach (var row in model.Rows) row.Name = current.GetValueOrDefault(row.Id)?.Name ?? "Оголошення недоступне";
+        if (ModelState.IsValid && !_productService.UpdatePrices(model.Category.Value, model.Rows))
+            ModelState.AddModelError("", "Список або ціни оголошень змінилися. Нічого не збережено. Оновіть сторінку й повторіть спробу.");
+        if (!ModelState.IsValid) return View(model);
+        TempData["CatalogMessage"] = "Усі ціни категорії збережено.";
+        return RedirectToAction(nameof(Index), new { Category = model.Category.Value.ToString() });
     }
 
     private IActionResult ProductNotFound()
@@ -78,7 +109,7 @@ public class ProductsController : Controller
 
         _productService.Add(product);
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Details), new { id = product.Id });
     }
 
     public IActionResult Edit(int id)
@@ -110,7 +141,7 @@ public class ProductsController : Controller
             return ProductNotFound();
         }
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Details), new { id = product.Id });
     }
 
     public IActionResult Delete(int id)

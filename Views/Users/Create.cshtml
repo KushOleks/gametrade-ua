@@ -1,0 +1,25 @@
+@model OrderSystem.Models.CreateDemoUserViewModel
+@{ ViewData["Title"] = "Створити демопрофіль"; }
+<section class="product-form-page">
+    <div class="form-container">
+        <h1>Демопрофіль з посилання</h1>
+        <p class="catalog-note">Дані надходять із посилання. Перевірте їх перед збереженням.</p>
+        <a asp-action="Create" asp-route-DisplayName="PlayerUA" asp-route-FavoriteGame="Counter-Strike 2">Відкрити приклад заповненого профілю</a>
+        <form asp-action="CreateFromQuery" asp-route-DisplayName="@Model.DisplayName" asp-route-FavoriteGame="@Model.FavoriteGame" method="post">
+            <div asp-validation-summary="All" class="validation-summary" role="alert"></div>
+            <div class="form-group">
+                <label asp-for="DisplayName"></label>
+                <input asp-for="DisplayName" readonly />
+                <span asp-validation-for="DisplayName"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FavoriteGame"></label>
+                <input asp-for="FavoriteGame" readonly />
+                <span asp-validation-for="FavoriteGame"></span>
+            </div>
+            <button class="main-button" type="submit">Зберегти демопрофіль</button>
+        </form>
+        <p class="catalog-note">Демонстраційний профіль без входу в обліковий запис. Зберігається до перезапуску сервера.</p>
+        <a asp-controller="Products" asp-action="Index" class="back-link">До каталогу</a>
+    </div>
+</section>
