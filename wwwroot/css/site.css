@@ -476,3 +476,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid #a8b1ff; outline-offs
 input[readonly] { color: #a8afba; cursor: default; }
 .users-table .form-group { min-width: 150px; }
 .catalog-filters summary { cursor: pointer; font-weight: 600; }
+
+.main-nav { height: auto; min-height: 70px; gap: 20px; flex-wrap: wrap; padding-top: 16px; padding-bottom: 16px; }
+.main-nav nav { flex-wrap: wrap; gap: 16px; }
+
+.catalog-filters > .main-button { margin-top: 16px; }

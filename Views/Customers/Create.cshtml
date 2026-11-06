@@ -1,0 +1,8 @@
+@model OrderSystem.Models.Customer
+@{ ViewData["Title"] = "Покупці: додати"; }
+<section class="product-form-page"><div class="form-container">
+<a asp-action="Index" class="back-link">← До списку</a><h1>@ViewData["Title"]</h1>
+<form asp-action="Create"  method="post"><div asp-validation-summary="All" class="validation-summary" role="alert"></div>
+<partial name="_Fields" model="Model" /><button class="main-button">Зберегти</button></form>
+</div></section>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

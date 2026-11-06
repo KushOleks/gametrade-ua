@@ -1,0 +1,8 @@
+@model OrderSystem.Models.OrderFormViewModel
+<div class="table-container"><table class="users-table"><thead><tr><th>Товар</th><th>Ціна за одиницю</th><th>Кількість</th></tr></thead><tbody>
+@for (var i = 0; i < Model.Rows.Count; i++)
+{
+<tr><td>@Model.Rows[i].Name<input asp-for="Rows[i].ProductId" type="hidden" /></td><td>@Model.Rows[i].UnitPrice.ToString("0.00") ₴</td>
+<td class="form-group"><label asp-for="Rows[i].Quantity" class="visually-hidden">Кількість: @Model.Rows[i].Name</label><input asp-for="Rows[i].Quantity" type="number" min="0" max="999" /><span asp-validation-for="Rows[i].Quantity"></span></td></tr>
+}
+</tbody></table></div>

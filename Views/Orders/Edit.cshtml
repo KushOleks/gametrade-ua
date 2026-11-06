@@ -1,0 +1,10 @@
+@model OrderSystem.Models.OrderFormViewModel
+@{ ViewData["Title"] = "Редагувати замовлення"; }
+<section class="products-page"><h1>Замовлення №@Model.Id</h1>
+<p class="catalog-note">Змінюйте кількість та покупця. Кількість 0 видаляє позицію. Початкові ціни й продавець зберігаються.</p>
+<form method="post" asp-action="Edit" asp-route-id="@Model.Id"><input asp-for="Id" type="hidden" /><input asp-for="Version" type="hidden" /><input asp-for="SellerId" type="hidden" />
+<div asp-validation-summary="All" class="validation-summary" role="alert"></div>
+<div class="form-group"><label asp-for="CustomerId"></label><select asp-for="CustomerId" asp-items="@(new SelectList(Model.Customers, "Id", "FullName"))"></select><span asp-validation-for="CustomerId"></span></div>
+<partial name="_Rows" model="Model" />
+<button class="main-button">Зберегти</button><a asp-action="Details" asp-route-id="@Model.Id" class="secondary-button">Скасувати</a></form></section>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

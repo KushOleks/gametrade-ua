@@ -482,3 +482,9 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Local marketplace data (never commit user data)
+App_Data/
+*.db
+*.db-shm
+*.db-wal

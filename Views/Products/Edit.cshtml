@@ -52,7 +52,11 @@
 
             <div class="form-group">
                 <label asp-for="SellerName"></label>
-                <input asp-for="SellerName" />
+                <input asp-for="SellerName" list="seller-names" />
+                <datalist id="seller-names">
+                @foreach (var name in (IEnumerable<string>?)ViewData["SellerNames"] ?? Array.Empty<string>())
+                { <option value="@name"></option> }
+                </datalist>
                 <span asp-validation-for="SellerName"></span>
             </div>
 

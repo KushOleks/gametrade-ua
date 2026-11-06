@@ -1,0 +1,4 @@
+@model OrderSystem.Models.Customer
+@{ ViewData["Title"] = "Покупці: деталі"; }
+<section class="product-details"><div class="details-card"><h1>@Model.FullName</h1><p>@Model.City</p>
+<div class="details-actions"><a asp-action="Edit" asp-route-id="@Model.Id" class="main-button">Редагувати</a><a asp-action="Index" class="secondary-button">До списку</a></div></div></section>

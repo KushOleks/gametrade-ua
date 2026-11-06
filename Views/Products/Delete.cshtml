@@ -24,6 +24,7 @@
         </p>
 
         <form asp-action="Delete" method="post">
+            <div asp-validation-summary="All" class="validation-summary" role="alert"></div>
 
             <input type="hidden"
                    asp-for="Id" />

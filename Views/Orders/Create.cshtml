@@ -1,0 +1,15 @@
+@model OrderSystem.Models.OrderFormViewModel
+@{ ViewData["Title"] = "Створити замовлення"; }
+<section class="products-page">
+<a asp-action="Index" class="back-link">← До замовлень</a><h1>Створити замовлення</h1>
+<p class="catalog-note">Це запис замовлення без оплати. Спочатку оберіть продавця, потім товари. Кількість 0 означає, що товар не обрано.</p>
+<form method="get" asp-action="Create" class="catalog-filters"><div class="form-group"><label for="seller">Продавець</label>
+<select id="seller" name="sellerId"><option value="0">Оберіть продавця</option>@foreach (var seller in Model.Sellers) { <option value="@seller.Id" selected="@(Model.SellerId == seller.Id)">@seller.Name</option> }</select></div><button class="main-button">Показати товари</button></form>
+<form method="post" asp-action="Create"><input asp-for="SellerId" type="hidden" />
+<div asp-validation-summary="All" class="validation-summary" role="alert"></div>
+<div class="form-group"><label asp-for="CustomerId"></label><select asp-for="CustomerId" asp-items="@(new SelectList(Model.Customers, "Id", "FullName"))"><option value="0">Оберіть покупця</option></select><span asp-validation-for="CustomerId"></span></div>
+<partial name="_Rows" model="Model" />
+@if (Model.Rows.Count > 0) { <button class="main-button">Зберегти замовлення</button> }
+else { <p>Оберіть продавця з доступними оголошеннями.</p> }
+</form></section>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

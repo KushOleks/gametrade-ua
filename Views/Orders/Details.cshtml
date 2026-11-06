@@ -1,0 +1,8 @@
+@model OrderSystem.Models.Order
+@{ ViewData["Title"] = $"Замовлення №{Model.Id}"; }
+<section class="products-page"><h1>@ViewData["Title"]</h1>
+<p>Покупець: @Model.Customer.FullName · Продавець: @Model.Seller.Name</p><p>Дата (UTC): @Model.CreatedAtUtc.ToString("dd.MM.yyyy HH:mm")</p>
+<div class="table-container"><table class="users-table"><thead><tr><th>Товар</th><th>Ціна</th><th>Кількість</th><th>Сума</th></tr></thead><tbody>
+@foreach (var line in Model.Lines) { <tr><td>@line.ProductName</td><td>@line.UnitPrice.ToString("0.00") ₴</td><td>@line.Quantity</td><td>@((line.UnitPrice * line.Quantity).ToString("0.00")) ₴</td></tr> }
+</tbody></table></div><p class="details-price">Разом: @Model.Total.ToString("0.00") ₴</p>
+<div class="details-actions"><a asp-action="Edit" asp-route-id="@Model.Id" class="main-button">Редагувати</a><a asp-action="Delete" asp-route-id="@Model.Id" class="danger-button">Видалити</a><a asp-action="Index" class="secondary-button">До списку</a></div></section>

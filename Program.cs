@@ -1,4 +1,6 @@
 using OrderSystem.Middleware;
+using Microsoft.EntityFrameworkCore;
+using OrderSystem.Data;
 using OrderSystem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,10 +8,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IMarketplaceInfoService, MarketplaceInfoService>();
-builder.Services.AddSingleton<IProductService, InMemoryProductService>();
-builder.Services.AddSingleton<IUserDirectoryService, DemoUserDirectoryService>();
+var connectionString = builder.Configuration.GetConnectionString("Marketplace") ?? "Data Source=App_Data/marketplace.db";
+Directory.CreateDirectory(Path.Combine(builder.Environment.ContentRootPath, "App_Data"));
+builder.Services.AddDbContext<MarketplaceContext>(options => options.UseSqlite(connectionString));
+builder.Services.AddScoped<IProductService, EfProductService>();
+builder.Services.AddScoped<IUserDirectoryService, EfUserDirectoryService>();
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var database = scope.ServiceProvider.GetRequiredService<MarketplaceContext>();
+    database.Database.Migrate();
+    SampleData.Initialize(database);
+}
 
 app.UseMiddleware<RequestLoggingMiddleware>();
 

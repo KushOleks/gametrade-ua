@@ -5,6 +5,7 @@ namespace OrderSystem.Services;
 public interface IProductService
 {
     IEnumerable<Product> GetAll();
+    IEnumerable<string> GetSellerNames() => GetAll().Select(p => p.SellerName).Distinct().OrderBy(n => n);
     Product? GetById(int id);
     void Add(Product product);
     bool Update(Product product);

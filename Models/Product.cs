@@ -1,4 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace OrderSystem.Models;
 
@@ -29,10 +32,17 @@ public class Product : IValidatableObject
     [Display(Name = "Опис")]
     public string? Description { get; set; }
 
+    [BindNever, ValidateNever]
+    public int SellerId { get; set; }
+    [BindNever, ValidateNever]
+    public Seller? Seller { get; set; }
+    private string _sellerName = "";
+
+    [NotMapped]
     [Required(ErrorMessage = "Вкажіть продавця")]
     [StringLength(40, ErrorMessage = "Ім'я продавця не може перевищувати 40 символів")]
     [Display(Name = "Продавець")]
-    public string SellerName { get; set; } = string.Empty;
+    public string SellerName { get => Seller?.Name ?? _sellerName; set => _sellerName = value; }
 
     [Display(Name = "Доступний")]
     public bool IsAvailable { get; set; } = true;

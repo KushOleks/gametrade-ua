@@ -1,0 +1,5 @@
+@model OrderSystem.Models.Customer
+@{ ViewData["Title"] = "Видалення"; }
+<section class="product-details"><div class="details-card"><h1>Видалити @Model.FullName?</h1>
+<form asp-action="Delete" method="post"><input asp-for="Id" type="hidden" /><div asp-validation-summary="All" class="validation-summary" role="alert"></div>
+<button class="danger-button">Видалити</button><a asp-action="Index" class="secondary-button">Скасувати</a></form></div></section>

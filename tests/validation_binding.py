@@ -1,5 +1,6 @@
 """Practice 4 first phase; also runs the regression tests from smoke.py."""
 import re
+from decimal import Decimal
 from html.parser import HTMLParser
 from urllib.parse import urlsplit
 from smoke import request, token, base
@@ -75,7 +76,7 @@ for key in keys:
 edited['Rows[0].Name'] = 'FORGED NAME'
 status, url, body = request('/Products/EditPrices', edited)
 assert status == 200 and 'Усі ціни категорії збережено' in body and 'FORGED NAME' not in body
-assert all(v == '20.50' for v in read_prices().values())
+assert all(Decimal(v) == Decimal('20.50') for v in read_prices().values())
 # Restore prices of existing products and remove the test listings.
 restore = Inputs(request(path)[2]).fields
 for key in keys:

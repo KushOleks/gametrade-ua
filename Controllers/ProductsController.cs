@@ -95,6 +95,7 @@ public class ProductsController : Controller
 
     public IActionResult Create()
     {
+        ViewData["SellerNames"] = _productService.GetSellerNames();
         return View(new Product());
     }
 
@@ -102,6 +103,7 @@ public class ProductsController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Create([Bind("Name,Game,Category,Price,Description,SellerName,IsAvailable")] Product product)
     {
+        ViewData["SellerNames"] = _productService.GetSellerNames();
         if (!ModelState.IsValid)
         {
             return View(product);
@@ -114,6 +116,7 @@ public class ProductsController : Controller
 
     public IActionResult Edit(int id)
     {
+        ViewData["SellerNames"] = _productService.GetSellerNames();
         var product = _productService.GetById(id);
 
         if (product == null)
@@ -128,6 +131,7 @@ public class ProductsController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Edit([FromRoute] int id, [Bind("Id,Name,Game,Category,Price,Description,SellerName,IsAvailable")] Product product)
     {
+        ViewData["SellerNames"] = _productService.GetSellerNames();
         if (id != product.Id) return BadRequest();
         if (_productService.GetById(id) is null) return ProductNotFound();
 
@@ -160,9 +164,12 @@ public class ProductsController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult DeleteConfirmed(int id)
     {
+        var product = _productService.GetById(id);
+        if (product is null) return ProductNotFound();
         if (!_productService.Delete(id))
         {
-            return ProductNotFound();
+            ModelState.AddModelError("", "Товар є в замовленні й не може бути видалений. Можна позначити його недоступним.");
+            return View("Delete", product);
         }
 
         return RedirectToAction(nameof(Index));
