@@ -3,63 +3,54 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="~/favicon.svg" />
+    <meta name="description" content="GameTrade UA — ігри, ігрова валюта, предмети та послуги. Знаходь пропозиції й публікуй власні оголошення українською." />
+    <meta name="theme-color" content="#fafbf9" />
     <title>@ViewData["Title"] — GameTrade UA</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/OrderSystem.styles.css" asp-append-version="true" />
 </head>
 <body>
+<a class="skip-link" href="#main-content">Перейти до вмісту</a>
 <header class="main-header">
     <div class="main-nav">
-
-        <a asp-controller="Home"
-           asp-action="Index"
-           class="brand">
-            GameTrade<span>UA</span>
+        <a asp-controller="Home" asp-action="Index" class="brand" aria-label="GameTrade UA — головна">
+            <span class="brand-mark" aria-hidden="true">g<span>t</span></span>
+            <span class="brand-name">GameTrade<span class="brand-country">UA</span></span>
         </a>
-
-        <nav>
-            <a asp-controller="Sellers" asp-action="Index">Продавці</a>
-            <a asp-controller="Customers" asp-action="Index">Покупці</a>
-            <a asp-controller="Orders" asp-action="Index">Замовлення</a>
-            <a asp-controller="Home" asp-action="Index">
-                Головна
-            </a>
-
-        <a asp-controller="Products"
-            asp-action="Index">
-            Каталог
-        </a>
-
-            <a asp-controller="Home" asp-action="Index" asp-fragment="how-it-works">
-                Як це працює
-            </a>
+        <nav aria-label="Головна навігація" class="primary-nav">
+            <a asp-controller="Home" asp-action="Index" asp-fragment="games">Ігри</a>
+            <a asp-controller="Products" asp-action="Index">Оголошення</a>
+            <a asp-controller="Home" asp-action="Index" asp-fragment="how-it-works">Як це працює</a>
         </nav>
-
         <div class="nav-actions">
-            <a asp-controller="Products" asp-action="Create" class="sell-nav">
-                + Продати
-            </a>
-
-
+            <details class="manage-menu">
+                <summary>Керування <span aria-hidden="true">⌄</span></summary>
+                <nav aria-label="Керування маркетплейсом">
+                    <a asp-controller="Orders" asp-action="Index">Замовлення</a>
+                    <a asp-controller="Sellers" asp-action="Index">Продавці</a>
+                    <a asp-controller="Customers" asp-action="Index">Покупці</a>
+                    <a asp-controller="Users" asp-action="Index">Демоадмін</a>
+                    <a asp-controller="Users" asp-action="Create">Демопрофіль</a>
+                </nav>
+            </details>
+            <a asp-controller="Products" asp-action="Create" class="sell-nav"><span aria-hidden="true">＋</span> Продати</a>
         </div>
-
     </div>
 </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+<div class="container page-shell">
+    <main id="main-content">@RenderBody()</main>
+</div>
+<footer class="footer">
+    <div class="container footer-inner">
+        <div><a asp-controller="Home" asp-action="Index" class="footer-brand">GameTrade UA</a><p>Спільна мова. Улюблені ігри.</p></div>
+        <div class="footer-links"><a asp-controller="Home" asp-action="Index" asp-fragment="games">Каталог ігор</a><a asp-controller="Home" asp-action="Index" asp-fragment="how-it-works">Про платформу</a></div>
+        <span class="footer-copy">© @DateTime.UtcNow.Year GameTrade UA · Українською · ₴ UAH</span>
     </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; @DateTime.UtcNow.Year — GameTrade UA · <a asp-controller="Users" asp-action="Index">Демоадмін</a> · <a asp-controller="Users" asp-action="Create">Демопрофіль</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+</footer>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

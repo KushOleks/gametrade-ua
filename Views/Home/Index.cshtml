@@ -1,74 +1,78 @@
+@model OrderSystem.Models.GameDirectoryViewModel
 @{
-    ViewData["Title"] = "Головна";
+    ViewData["Title"] = "Ігри та ігрові цінності";
+    var groups = Model.DirectoryGames.GroupBy(g => g.Letter).ToArray();
+    bool IsMatch(GameDirectoryEntry game) => string.IsNullOrWhiteSpace(Model.Query) || game.Name.Contains(Model.Query.Trim(), StringComparison.OrdinalIgnoreCase);
 }
-
-<div class="hero">
-    <div class="hero-content">
-
-        <span class="hero-badge">
-            Маркетплейс для геймерів
-        </span>
-
-        <h1>
-            @ViewData["ProjectName"]
-        </h1>
-
-        <p class="hero-description">
-            @ViewData["Description"]
-        </p>
-
-        <div class="hero-buttons">
-            <a asp-controller="Products" asp-action="Index" class="main-button">
-                Переглянути товари
-            </a>
-
-            <a asp-controller="Products" asp-action="Create" class="secondary-button">
-                Продати
-            </a>
-        </div>
-
+<section class="directory-intro" aria-labelledby="home-heading">
+    <div class="intro-copy">
+        <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> Місце зустрічі українських гравців</p>
+        <h1 id="home-heading">Твоя гра.<br /><span>Твої можливості.</span></h1>
+        <p class="intro-description">Ігрова валюта, предмети та послуги —<br class="desktop-break" /> знайди потрібне у своїй грі.</p>
+        <a class="intro-link" href="#games">Обрати гру <span aria-hidden="true">↗</span></a>
     </div>
-</div>
-
-<section class="features">
-
-    <h2>Що можна буде знайти на платформі</h2>
-
-    <div class="feature-grid">
-
-        <div class="feature-card">
-            <h3>Ігрова валюта</h3>
-            <p>
-                Валюта та ресурси для популярних онлайн-ігор.
-            </p>
-        </div>
-
-        <div class="feature-card">
-            <h3>Предмети</h3>
-            <p>
-                Скіни, предмети та інші внутрішньоігрові цінності.
-            </p>
-        </div>
-
-        <div class="feature-card">
-            <h3>Акаунти</h3>
-            <p>
-                Оголошення користувачів із продажу ігрових акаунтів.
-            </p>
-        </div>
-
-        <div class="feature-card">
-            <h3>Послуги</h3>
-            <p>
-                Допомога, прокачування, навчання та інші ігрові послуги.
-            </p>
-        </div>
-
-    </div>
-
+    <aside class="intro-note" aria-label="Про GameTrade UA">
+        <div class="note-symbol" aria-hidden="true"><span>G</span><span>T</span></div>
+        <p class="note-label">GAME ON. TRADE LOCAL.</p>
+        <h2>Твоє ком’юніті.<br />Твій маркетплейс.</h2>
+        <p>Знаходь пропозиції та публікуй власні.<br />Просто, українською, у гривнях.</p>
+        <div class="note-stats"><span><strong>@Model.TotalGames</strong> ігор у каталозі</span><span><strong>@Model.OfferCount</strong> активних оголошень</span></div>
+    </aside>
 </section>
-<section id="how-it-works" class="features">
-    <h2>Як це працює</h2>
-    <p>Перегляньте каталог, відкрийте деталі пропозиції або створіть власне оголошення.</p>
-    <p>Зараз працює демонстраційний каталог: оголошення зберігаються в базі даних. Оплата та угоди ще не підключені.</p>
+<section id="games" class="game-directory" aria-labelledby="games-heading">
+    <div class="section-top"><div><p class="eyebrow">Знайди свою гру</p><h2 id="games-heading">Каталог ігор<span class="count-badge">@Model.TotalGames</span></h2></div><a asp-controller="Products" asp-action="Index" class="quiet-link">Усі оголошення <span aria-hidden="true">↗</span></a></div>
+    <form asp-controller="Home" asp-action="Index" asp-fragment="games" method="get" class="game-search" role="search">
+        <label for="game-search" class="visually-hidden">Пошук гри за назвою</label>
+        <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="10.8" cy="10.8" r="7.3" stroke="currentColor" stroke-width="1.6" /><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /></svg>
+        <input id="game-search" type="search" name="q" value="@Model.Query" placeholder="Наприклад, Counter-Strike 2 або World of Warcraft" autocomplete="off" />
+        @if (Model.Category.HasValue) { <input type="hidden" name="category" value="@Model.Category" /> }
+        @if (Model.OnlyWithOffers) { <input type="hidden" name="onlyWithOffers" value="true" /> }
+        <button type="submit">Знайти гру <span aria-hidden="true">→</span></button>
+    </form>
+    <div class="directory-toolbar">
+        <div class="category-tabs" aria-label="Фільтр за категорією">
+            <a asp-action="Index" asp-route-q="@Model.Query" asp-route-onlyWithOffers="@(Model.OnlyWithOffers ? "true" : null)" asp-fragment="games" class="@(!Model.Category.HasValue ? "is-active" : "")" aria-current="@(!Model.Category.HasValue ? "true" : null)">Усі категорії</a>
+            @foreach (var category in Enum.GetValues<ProductCategory>())
+            { <a asp-action="Index" asp-route-q="@Model.Query" asp-route-category="@category" asp-route-onlyWithOffers="@(Model.OnlyWithOffers ? "true" : null)" asp-fragment="games" class="@(Model.Category == category ? "is-active" : "")" aria-current="@(Model.Category == category ? "true" : null)">@(((ProductCategory?)category).Label())</a> }
+        </div>
+        <a asp-action="Index" asp-route-q="@Model.Query" asp-route-category="@Model.Category" asp-route-onlyWithOffers="@(!Model.OnlyWithOffers ? "true" : null)" asp-fragment="games" class="offers-toggle @(Model.OnlyWithOffers ? "is-active" : "")" aria-current="@(Model.OnlyWithOffers ? "true" : null)"><span class="toggle-dot" aria-hidden="true"></span> З оголошеннями</a>
+    </div>
+    <div class="alphabet-bar">
+        <span class="alphabet-label">А–Я</span>
+        <nav aria-label="Ігри за алфавітом">
+        @foreach (var group in groups)
+        { <a href="#letter-@group.Key" data-letter="@group.Key" hidden="@(!group.Any(IsMatch))">@group.Key</a> }
+        </nav>
+        <span class="result-count" aria-live="polite"><span id="game-result-count">@Model.Games.Count</span> ігор</span>
+    </div>
+    <div class="game-columns" id="game-list">
+        @foreach (var group in groups)
+        {
+            <section class="letter-group" id="letter-@group.Key" data-letter-group="@group.Key" aria-labelledby="heading-@group.Key" hidden="@(!group.Any(IsMatch))">
+                <h3 id="heading-@group.Key" class="letter-heading">@group.Key</h3>
+                @foreach (var game in group)
+                {
+                    <article class="game-entry" data-game-name="@game.Name.ToLowerInvariant()" hidden="@(!IsMatch(game))">
+                        <div class="game-title-row"><h4><a asp-controller="Products" asp-action="Index" asp-route-Game="@game.Name" asp-route-OnlyAvailable="true">@game.Name</a></h4>@if (game.OfferCount > 0) { <span class="offer-dot" title="@game.OfferCount активних оголошень" aria-label="@game.OfferCount активних оголошень"></span> }</div>
+                        <div class="game-category-links">
+                            @foreach (var category in game.Categories)
+                            { <a asp-controller="Products" asp-action="Index" asp-route-Game="@game.Name" asp-route-Category="@category" asp-route-OnlyAvailable="true">@(((ProductCategory?)category).Label())</a> }
+                        </div>
+                        @if (game.OfferCount == 0) { <span class="game-empty-note">Поки без оголошень</span> }
+                    </article>
+                }
+            </section>
+        }
+    </div>
+    <div id="game-empty" class="directory-empty" hidden="@(Model.Games.Count != 0)"><span aria-hidden="true">⌕</span><h3>Такої гри поки не знайшли</h3><p>Спробуй іншу назву або скинь фільтри.</p><a asp-action="Index" asp-fragment="games" class="secondary-button">Показати всі ігри</a></div>
+    <div class="directory-bottom"><p><span class="offer-dot" aria-hidden="true"></span> Є активні оголошення</p><a asp-controller="Products" asp-action="Create">Не знайшов потрібного? Створи оголошення <span aria-hidden="true">↗</span></a></div>
+</section>
+<section id="how-it-works" class="how-section" aria-labelledby="how-heading">
+    <div class="section-top"><div><p class="eyebrow">Без зайвих кроків</p><h2 id="how-heading">Від гри до пропозиції</h2></div></div>
+    <div class="how-grid">
+        <article><span class="step-number">01</span><h3>Обери гру</h3><p>Знайди назву в каталозі або скористайся пошуком.</p></article>
+        <article><span class="step-number">02</span><h3>Переглянь пропозиції</h3><p>Порівняй ціни, категорії та описи оголошень.</p></article>
+        <article><span class="step-number">03</span><h3>Додай своє</h3><p>Маєш що запропонувати? Опублікуй власне оголошення.</p></article>
+    </div>
+    <p class="development-note"><span aria-hidden="true">◌</span> Платформа розвивається. Наразі доступні оголошення та навчальний облік замовлень; оплата ще не підключена.</p>
 </section>

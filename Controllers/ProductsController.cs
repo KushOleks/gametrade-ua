@@ -41,7 +41,7 @@ public class ProductsController : Controller
         {
             Filter = filter,
             Products = products.ToArray(),
-            Games = all.Select(p => p.Game).Distinct().OrderBy(g => g).ToArray(),
+            Games = all.Select(p => p.Game).Concat(string.IsNullOrWhiteSpace(filter.Game) ? Array.Empty<string>() : new[] { filter.Game }).Distinct().OrderBy(g => g).ToArray(),
             Categories = Enum.GetValues<ProductCategory>().Select(c => ((ProductCategory?)c).Label()).ToArray()
         });
     }

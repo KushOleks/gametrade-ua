@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IMarketplaceInfoService, MarketplaceInfoService>();
+builder.Services.AddScoped<IGameDirectoryService, GameDirectoryService>();
 var connectionString = builder.Configuration.GetConnectionString("Marketplace") ?? "Data Source=App_Data/marketplace.db";
 Directory.CreateDirectory(Path.Combine(builder.Environment.ContentRootPath, "App_Data"));
 builder.Services.AddDbContext<MarketplaceContext>(options => options.UseSqlite(connectionString));

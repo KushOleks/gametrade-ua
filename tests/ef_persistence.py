@@ -59,6 +59,15 @@ with tempfile.TemporaryDirectory(prefix='gametrade-ef-') as temp:
             assert status == 200 and '/details/' in url.lower(), body
             return int(url.rsplit('/', 1)[1])
 
+        status, _, home = request('/')
+        assert status == 200 and 'Каталог ігор' in home and 'data-game-name="counter-strike 2"' in home
+        assert 'id="game-result-count">1</span>' in request('/?q=counter')[2]
+        assert 'id="game-result-count">0</span>' in request('/?q=unknown-game-xyz')[2]
+        assert 'id="game-result-count">3</span>' in request('/?onlyWithOffers=true')[2]
+        status, _, empty_game = request('/Products?Game=Minecraft&Category=Services')
+        assert status == 200 and 'value="Minecraft" selected="selected"' in empty_game
+        assert 'За цими умовами оголошень немає' in empty_game
+
         customer = create_record('Customers', dict(FirstName='EF Buyer', LastName='Persistence', City='Київ'))
         seller = create_record('Sellers', dict(Name='EF Seller', City='Львів', Description='Demo shop'))
         for controller, item, values in [
@@ -76,6 +85,8 @@ with tempfile.TemporaryDirectory(prefix='gametrade-ef-') as temp:
         status, url, body = request('/Products/Create', dict(product_data, __RequestVerificationToken=token('/Products/Create')))
         assert status == 200 and 'details-card' in body
         product = int(url.rsplit('/', 1)[1])
+        assert 'data-game-name="test game"' in request('/?q=Test+game')[2]
+        assert 'id="game-result-count">1</span>' in request('/?q=Test+game&onlyWithOffers=true')[2]
         status, _, body = request(f'/Orders/Create?sellerId={seller}')
         assert status == 200 and 'Persistent EF item' in body and 'EF Buyer Persistence' in body
         order_form = Inputs(body).fields
